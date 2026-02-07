@@ -1,5 +1,5 @@
 {
-  "name": "vue3-nice-treeview",
+  "name": "@vr1cc/vue3-nice-treeview",
   "version": "0.1.0",
   "description": "An easy to use treeview for vue3 with practical features",
   "private": false,
