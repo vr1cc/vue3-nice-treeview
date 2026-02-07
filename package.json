@@ -1,5 +1,5 @@
 {
-  "name": "@vr1cc/vue3-nice-treeview",
+  "name": "vue3-nice-treeview",
   "version": "0.1.0",
   "description": "An easy to use treeview for vue3 with practical features",
   "private": false,
@@ -25,6 +25,9 @@
   "scripts": {
     "build": "vite build && node -e \"require('fs').copyFileSync('src/index.d.ts','dist/index.d.ts')\"",
     "prepublishOnly": "npm run build"
+  },
+  "dependencies": {
+    "bootstrap-icons": "1.11.0"
   },
   "peerDependencies": {
     "vue": "^3.0.0"

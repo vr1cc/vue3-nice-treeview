@@ -1,12 +1,12 @@
 import { Component } from 'vue'
 
 export interface TreeViewNode {
-  Id: string | number
-  Label: string
-  Checked?: boolean
-  Selected?: boolean
-  Expanded?: boolean
-  Children?: TreeViewNode[]
+  id: string | number
+  label: string
+  checked?: boolean
+  selected?: boolean
+  expanded?: boolean
+  children?: TreeViewNode[]
   [key: string]: any
 }
 
@@ -26,8 +26,6 @@ export const NiceTreeView: Component<NiceTreeViewProps>
 
 export default NiceTreeView
 
-declare const _default: {
+export declare const NiceTreeViewPlugin: {
   install: (app: any) => void
 }
-
-export { _default as install }

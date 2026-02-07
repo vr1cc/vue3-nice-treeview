@@ -30,27 +30,27 @@
         <div class="position-relative" :class="{'border border-gray-300 rounded py-2 tree-container parent-content': isRoot, 'floating-content': isRoot && showToolbar && floatingHeader}">
             <div class="tree-view position-relative">
                 <ul class="px-6">
-                    <div v-for="node in nodes" :key="node.Id" class="d-flex position-relative">
-                        <i @click="toggleNode(node);" v-if="node.Children"
+                    <div v-for="node in nodes" :key="node.id" class="d-flex position-relative">
+                        <i @click="toggleNode(node);" v-if="node.children"
                            class="bi mt-2 cursor-pointer position-absolute"
-                           :class="`bi-${node.Expanded ? 'chevron-down' : (rtl ? 'chevron-left' : 'chevron-right')}`"></i>
+                           :class="`bi-${node.expanded ? 'chevron-down' : (rtl ? 'chevron-left' : 'chevron-right')}`"></i>
                         <i v-else class="bi fs-5 mt-2 cursor-pointer bi-dot"></i>
-                        <li :class="node.Children ? (node.Expanded ? 'expanded' : 'collapsed') : 'final'">
+                        <li :class="node.children ? (node.expanded ? 'expanded' : 'collapsed') : 'final'">
                             <div class="node"
-                                 :class="{'ntv-selected': !showCheckboxes && node.Selected && (!node.Children || !node.Children.length), 'ntv-selectable': !showCheckboxes}"
+                                 :class="{'ntv-selected': !showCheckboxes && node.selected && (!node.children || !node.children.length), 'ntv-selectable': !showCheckboxes}"
                                  @click="!showCheckboxes ? onNodeClick(node, $event) : null">
-                                <input :id="'chb_' + node.Id" type="checkbox" class="form-check-input border-gray-400"
-                                       v-if="showCheckboxes && (multiSelect || !node.Children || !node.Children.length)"
-                                       v-model="node.Checked"
+                                <input :id="'chb_' + node.id" type="checkbox" class="form-check-input border-gray-400"
+                                       v-if="showCheckboxes && (multiSelect || !node.children || !node.children.length)"
+                                       v-model="node.checked"
                                        @change="onNodeCheckChange(node)"/>
-                                <label :for="showCheckboxes && (multiSelect || !node.Children || !node.Children.length) ? 'chb_' + node.Id : null"
-                                       :class="['form-check-label', showCheckboxes ? 'cursor-default' : 'cursor-pointer', { 'bg-warning': node.Match }]"
+                                <label :for="showCheckboxes && (multiSelect || !node.children || !node.children.length) ? 'chb_' + node.id : null"
+                                       :class="['form-check-label', showCheckboxes ? 'cursor-default' : 'cursor-pointer', { 'bg-warning': node.match }]"
                                        @dblclick="toggleNode(node)">
-                                    {{ node.Label }}
+                                    {{ node.label }}
                                 </label>
                             </div>
-                            <NiceTreeView v-if="node.Children && node.Expanded"
-                                      :nodes="node.Children"
+                            <NiceTreeView v-if="node.children && node.expanded"
+                                      :nodes="node.children"
                                       :showCheckboxes="showCheckboxes"
                                       :multiSelect="multiSelect"
                                       :showSearchBox="false"
@@ -92,8 +92,8 @@ export default {
             if (!Array.isArray(nodes)) return;
             nodes.forEach(node => {
                 callback(node);
-                if (node.Children && node.Children.length > 0)
-                    traverseNodes(node.Children, callback);
+                if (node.children && node.children.length > 0)
+                    traverseNodes(node.children, callback);
             });
         }
 
@@ -108,12 +108,12 @@ export default {
         function filterNodes(nodes) {
             let hasMatch = false;
             nodes.forEach(node => {
-                const match = node.Label.toLowerCase().includes(searchText.value.toLowerCase());
-                node.Match = match;
+                const match = node.label.toLowerCase().includes(searchText.value.toLowerCase());
+                node.match = match;
 
-                if (node.Children?.length) {
-                    const childMatch = filterNodes(node.Children);
-                    node.Expanded = childMatch;
+                if (node.children?.length) {
+                    const childMatch = filterNodes(node.children);
+                    node.expanded = childMatch;
                     hasMatch = hasMatch || match || childMatch;
                 } else {
                     hasMatch = hasMatch || match;
@@ -123,33 +123,33 @@ export default {
         }
 
         function toggleNode(node) {
-            if (node.Children) node.Expanded = !node.Expanded;
+            if (node.children) node.expanded = !node.expanded;
         }
 
         function expandAll() {
             traverseNodes(props.nodes, n => {
-                if (n.Children) n.Expanded = true;
+                if (n.children) n.expanded = true;
             });
         }
 
         function collapseAll() {
             traverseNodes(props.nodes, n => {
-                if (n.Children) n.Expanded = false;
+                if (n.children) n.expanded = false;
             });
         }
 
         function cascadeCheck(node, isChecked) {
-            node.Checked = isChecked;
+            node.checked = isChecked;
             node.indeterminate = false;
-            if (node.Children && node.Children.length > 0)
-                node.Children.forEach(c => cascadeCheck(c, isChecked));
+            if (node.children && node.children.length > 0)
+                node.children.forEach(c => cascadeCheck(c, isChecked));
         }
 
         function collectChecked(nodes) {
             const result = [];
             nodes?.forEach(n => {
-                if (n.Children?.length) result.push(...collectChecked(n.Children));
-                else if (n.Checked) result.push(n.Id);
+                if (n.children?.length) result.push(...collectChecked(n.children));
+                else if (n.checked) result.push(n.id);
             });
             return result;
         }
@@ -157,34 +157,34 @@ export default {
         function collectSelected(nodes) {
             const result = [];
             nodes?.forEach(n => {
-                if (n.Children?.length) result.push(...collectSelected(n.Children));
-                else if (n.Selected) result.push(n.Id);
+                if (n.children?.length) result.push(...collectSelected(n.children));
+                else if (n.selected) result.push(n.id);
             });
             return result;
         }
 
         function cascadeSelect(node, isSelected) {
-            if (node.Children && node.Children.length > 0) {
-                node.Children.forEach(c => cascadeSelect(c, isSelected));
+            if (node.children && node.children.length > 0) {
+                node.children.forEach(c => cascadeSelect(c, isSelected));
             } else {
-                node.Selected = isSelected;
+                node.selected = isSelected;
             }
         }
 
         function areAllLeavesSelected(node) {
-            if (!node.Children || !node.Children.length) return !!node.Selected;
-            return node.Children.every(c => areAllLeavesSelected(c));
+            if (!node.children || !node.children.length) return !!node.selected;
+            return node.children.every(c => areAllLeavesSelected(c));
         }
 
         function updateParentStates(nodes) {
             nodes?.forEach(n => {
-                if (n.Children?.length) {
-                    updateParentStates(n.Children);
-                    const allChecked = n.Children.every(c => c.Checked);
-                    const noneChecked = n.Children.every(c => !c.Checked && !c.indeterminate);
-                    const someChecked = n.Children.some(c => c.Checked || c.indeterminate);
-                    if (!document.activeElement || document.activeElement.id !== "chb_" + n.Id)
-                        n.Checked = allChecked;
+                if (n.children?.length) {
+                    updateParentStates(n.children);
+                    const allChecked = n.children.every(c => c.checked);
+                    const noneChecked = n.children.every(c => !c.checked && !c.indeterminate);
+                    const someChecked = n.children.some(c => c.checked || c.indeterminate);
+                    if (!document.activeElement || document.activeElement.id !== "chb_" + n.id)
+                        n.checked = allChecked;
                     n.indeterminate = !allChecked && someChecked && !noneChecked;
                 }
             });
@@ -193,23 +193,23 @@ export default {
         function setIndeterminateVisual(nodes) {
             if (!Array.isArray(nodes)) return;
             nodes.forEach(n => {
-                const el = document.getElementById("chb_" + n.Id);
+                const el = document.getElementById("chb_" + n.id);
                 if (el) el.indeterminate = !!n.indeterminate;
-                if (Array.isArray(n.Children) && n.Children.length > 0)
-                    setIndeterminateVisual(n.Children);
+                if (Array.isArray(n.children) && n.children.length > 0)
+                    setIndeterminateVisual(n.children);
             });
         }
 
         function clearAllChecks(rootNodes) {
             traverseNodes(rootNodes, n => {
-                n.Checked = false;
+                n.checked = false;
                 n.indeterminate = false;
             });
         }
 
         function clearAllSelections(rootNodes) {
             traverseNodes(rootNodes, n => {
-                n.Selected = false;
+                n.selected = false;
             });
         }
 
@@ -217,13 +217,13 @@ export default {
             if (!props.multiSelect) return;
             if (props.showCheckboxes) {
                 traverseNodes(props.nodes, n => {
-                    n.Checked = true;
+                    n.checked = true;
                     n.indeterminate = false;
                 });
                 emitCheckedChange();
             } else {
                 traverseNodes(props.nodes, n => {
-                    if (!n.Children || !n.Children.length) n.Selected = true;
+                    if (!n.children || !n.children.length) n.selected = true;
                 });
                 emitSelectedChange();
             }
@@ -233,13 +233,13 @@ export default {
             if (!props.multiSelect) return;
             if (props.showCheckboxes) {
                 traverseNodes(props.nodes, n => {
-                    n.Checked = false;
+                    n.checked = false;
                     n.indeterminate = false;
                 });
                 emitCheckedChange();
             } else {
                 traverseNodes(props.nodes, n => {
-                    n.Selected = false;
+                    n.selected = false;
                 });
                 emitSelectedChange();
             }
@@ -263,7 +263,7 @@ export default {
             const rootNodes = getRootNodes();
 
             if (props.multiSelect) {
-                if (node.Children?.length) cascadeCheck(node, node.Checked);
+                if (node.children?.length) cascadeCheck(node, node.checked);
                 updateParentStates(rootNodes);
                 nextTick(() => {
                     setIndeterminateVisual(rootNodes);
@@ -271,9 +271,9 @@ export default {
                     emit("node-check-change", node, allChecked);
                 });
             } else {
-                if (node.Checked) {
+                if (node.checked) {
                     clearAllChecks(rootNodes);
-                    node.Checked = true;
+                    node.checked = true;
                 }
                 nextTick(() => {
                     const allChecked = collectChecked(rootNodes);
@@ -284,10 +284,10 @@ export default {
 
         function onNodeClick(node, event) {
             if (props.showCheckboxes) return;
-            if (!props.multiSelect && node.Children && node.Children.length) return;
+            if (!props.multiSelect && node.children && node.children.length) return;
 
             const rootNodes = getRootNodes();
-            const isParent = node.Children && node.Children.length > 0;
+            const isParent = node.children && node.children.length > 0;
 
             if (props.multiSelect) {
                 if (event.ctrlKey || event.metaKey) {
@@ -295,19 +295,19 @@ export default {
                         const allSelected = areAllLeavesSelected(node);
                         cascadeSelect(node, !allSelected);
                     } else {
-                        node.Selected = !node.Selected;
+                        node.selected = !node.selected;
                     }
                 } else {
                     clearAllSelections(rootNodes);
                     if (isParent) {
                         cascadeSelect(node, true);
                     } else {
-                        node.Selected = true;
+                        node.selected = true;
                     }
                 }
             } else {
                 clearAllSelections(rootNodes);
-                node.Selected = true;
+                node.selected = true;
             }
 
             emitSelectedChange(node);
@@ -327,8 +327,8 @@ export default {
 
                 if (!text || text.length === 0) {
                     traverseNodes(props.nodes, node => {
-                        node.Match = false;
-                        if (node.Children) node.Expanded = true;
+                        node.match = false;
+                        if (node.children) node.expanded = true;
                     });
                 } else {
                     filterNodes(props.nodes);
