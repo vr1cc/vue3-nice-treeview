@@ -1,6 +1,6 @@
 {
   "name": "vue3-nice-treeview",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An easy to use treeview for vue3 with practical features",
   "private": false,
   "main": "dist/vue3-nice-treeview.umd.js",
