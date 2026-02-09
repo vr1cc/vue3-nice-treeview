@@ -31,11 +31,11 @@
             <div class="tree-view position-relative">
                 <ul class="px-6">
                     <div v-for="node in nodes" :key="node.id" class="d-flex position-relative">
-                        <i @click="toggleNode(node);" v-if="node.children && node.children.length > 0"
+                        <i @click="toggleNode(node);" v-if="node.children && node.children.length"
                            class="bi mt-2 cursor-pointer position-absolute"
                            :class="`bi-${node.expanded ? 'chevron-down' : (rtl ? 'chevron-left' : 'chevron-right')}`"></i>
                         <i v-else class="bi fs-5 mt-2 cursor-pointer bi-dot"></i>
-                        <li :class="node.children ? (node.expanded ? 'expanded' : 'collapsed') : 'final'">
+                        <li :class="node.children && node.children.length ? (node.expanded ? 'expanded' : 'collapsed') : 'final'">
                             <div class="node"
                                  :class="{'ntv-selected': !showCheckboxes && node.selected && (!node.children || !node.children.length), 'ntv-selectable': !showCheckboxes}"
                                  @click="!showCheckboxes ? onNodeClick(node, $event) : null">
@@ -49,7 +49,7 @@
                                     {{ node.label }}
                                 </label>
                             </div>
-                            <NiceTreeView v-if="node.children && node.expanded"
+                            <NiceTreeView v-if="node.children && node.children.length && node.expanded"
                                       :nodes="node.children"
                                       :showCheckboxes="showCheckboxes"
                                       :multiSelect="multiSelect"
