@@ -31,7 +31,7 @@
             <div class="tree-view position-relative">
                 <ul class="px-6">
                     <div v-for="node in nodes" :key="node.id" class="d-flex position-relative">
-                        <i @click="toggleNode(node);" v-if="node.children"
+                        <i @click="toggleNode(node);" v-if="node.children && node.children.length > 0"
                            class="bi mt-2 cursor-pointer position-absolute"
                            :class="`bi-${node.expanded ? 'chevron-down' : (rtl ? 'chevron-left' : 'chevron-right')}`"></i>
                         <i v-else class="bi fs-5 mt-2 cursor-pointer bi-dot"></i>
@@ -573,7 +573,7 @@ export default {
 }
 
 .ntv-rtl li:before {
-    right: auto;
+    right: 0;
     left: auto;
 }
 
@@ -627,7 +627,7 @@ export default {
 }
 
 .ntv-ltr li:before {
-    left: auto;
+    left: 0;
     right: auto;
 }
 
